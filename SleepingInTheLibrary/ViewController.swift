@@ -8,24 +8,17 @@
 
 import UIKit
 
-// MARK: - ViewController: UIViewController
-
 class ViewController: UIViewController {
-
-    // MARK: Outlets
     
     @IBOutlet weak var photoImageView: UIImageView!
     @IBOutlet weak var photoTitleLabel: UILabel!
     @IBOutlet weak var grabImageButton: UIButton!
     
-    // MARK: Actions
     
     @IBAction func grabNewImage(sender: AnyObject) {
         setUIEnabled(false)
         getImageFromFlickr()
     }
-    
-    // MARK: Configure UI
     
     private func setUIEnabled(enabled: Bool) {
         photoTitleLabel.enabled = enabled
@@ -37,8 +30,6 @@ class ViewController: UIViewController {
             grabImageButton.alpha = 0.5
         }
     }
-    
-    // MARK: Make Network Request
     
     private func getImageFromFlickr() {
         
@@ -57,8 +48,27 @@ class ViewController: UIViewController {
         
         let task = NSURLSession.sharedSession().dataTaskWithRequest(request) { (data, response, error) in
             
+            func displayError(error: String) {
+                print(error)
+                print("URL at time of error: \(url)")
+                performUIUpdatesOnMain {
+                    self.setUIEnabled(true)
+                }
+            }
+            
             if error == nil {
-                print(data!)
+                
+                if let data = data {
+                    
+                    let parsedResult: AnyObject!
+                    do {
+                    parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
+                    } catch {
+                        displayError("Could not parse the data as JSON: '\(data)'")
+                        return
+                    }
+                    print(parsedResult)
+                }
             }
         }
         task.resume()
@@ -80,7 +90,6 @@ class ViewController: UIViewController {
             return "?\(keyValuePairs.joinWithSeparator("&"))"
         }
     }
-    
 }
 
 
