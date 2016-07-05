@@ -70,7 +70,15 @@ class ViewController: UIViewController {
                     
                     if let photosDictionary = parsedResult[Constants.FlickrResponseKeys.Photos] as? [String : AnyObject],
                     photoArray = photosDictionary[Constants.FlickrResponseKeys.Photo] as? [[String : AnyObject]] {
-                        print(photoArray[0])
+                        
+                        let randomPhotoIndex = Int(arc4random_uniform(UInt32(photoArray.count)))
+                        let photoDictionary = photoArray[randomPhotoIndex] as [String : AnyObject]
+                        
+                        if let imageUrlString = photoDictionary[Constants.FlickrResponseKeys.MediumURL] as? String,
+                            let photoTitle = photoDictionary[Constants.FlickrResponseKeys.Title] as? String {
+                            print(imageUrlString)
+                            print(photoTitle)
+                        }
                     }
                 }
             }
