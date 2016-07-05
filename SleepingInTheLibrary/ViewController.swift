@@ -2,9 +2,6 @@
 //  ViewController.swift
 //  SleepingInTheLibrary
 //
-//  Created by Jarrod Parkes on 11/3/15.
-//  Copyright © 2015 Udacity. All rights reserved.
-//
 
 import UIKit
 
@@ -76,8 +73,15 @@ class ViewController: UIViewController {
                         
                         if let imageUrlString = photoDictionary[Constants.FlickrResponseKeys.MediumURL] as? String,
                             let photoTitle = photoDictionary[Constants.FlickrResponseKeys.Title] as? String {
-                            print(imageUrlString)
-                            print(photoTitle)
+                            
+                            let imageURL = NSURL(string: imageUrlString)
+                            if let imageData = NSData(contentsOfURL: imageURL!) {
+                                performUIUpdatesOnMain() {
+                                    self.photoImageView.image = UIImage(data: imageData)
+                                    self.photoTitleLabel.text = photoTitle
+                                    self.setUIEnabled(true)
+                                }
+                            }
                         }
                     }
                 }
@@ -103,9 +107,3 @@ class ViewController: UIViewController {
         }
     }
 }
-
-
-
-
-
-
