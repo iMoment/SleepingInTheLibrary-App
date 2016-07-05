@@ -42,7 +42,26 @@ class ViewController: UIViewController {
     
     private func getImageFromFlickr() {
         
-        // TODO: Write the network code here!
+        let methodParameters = [
+            Constants.FlickrParameterKeys.Method: Constants.FlickrParameterValues.GalleryPhotosMethod,
+            Constants.FlickrParameterKeys.APIKey: Constants.FlickrParameterValues.APIKey,
+            Constants.FlickrParameterKeys.GalleryID: Constants.FlickrParameterValues.GalleryID,
+            Constants.FlickrParameterKeys.Extras: Constants.FlickrParameterValues.MediumURL,
+            Constants.FlickrParameterKeys.Format: Constants.FlickrParameterValues.ResponseFormat,
+            Constants.FlickrParameterKeys.NoJSONCallback: Constants.FlickrParameterValues.DisableJSONCallback
+        ]
+        
+        let urlString = Constants.Flickr.APIBaseURL + escapedParameters(methodParameters)
+        let url = NSURL(string: urlString)!
+        let request = NSURLRequest(URL: url)
+        
+        let task = NSURLSession.sharedSession().dataTaskWithRequest(request) { (data, response, error) in
+            
+            if error == nil {
+                print(data!)
+            }
+        }
+        task.resume()
     }
     
     private func escapedParameters(parameters: [String:AnyObject]) -> String {
