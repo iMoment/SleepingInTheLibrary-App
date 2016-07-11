@@ -80,7 +80,12 @@ class ViewController: UIViewController {
                 displayError("Could not parse the data as JSON: '\(data)'")
                 return
             }
-
+            
+            // Check to see if Flickr returned an error (stat != ok)
+            guard let stat = parsedResult[Constants.FlickrResponseKeys.Status] as? String where stat == Constants.FlickrResponseValues.OKStatus else {
+                displayError("The Flickr API returned an error.  See error code and message in \(parsedResult)")
+                return
+            }
                     // Photos is a Dictionary containing String/AnyObject pairs
                     if let photosDictionary = parsedResult[Constants.FlickrResponseKeys.Photos] as? [String : AnyObject],
                     photoArray = photosDictionary[Constants.FlickrResponseKeys.Photo] as? [[String : AnyObject]] {
