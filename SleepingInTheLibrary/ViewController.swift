@@ -1,7 +1,6 @@
 //
 //  ViewController.swift
 //  SleepingInTheLibrary
-//
 
 import UIKit
 
@@ -105,16 +104,17 @@ class ViewController: UIViewController {
                 return
             }
             
-                            
-                            let imageURL = NSURL(string: imageUrlString)
-                            if let imageData = NSData(contentsOfURL: imageURL!) {
-                                performUIUpdatesOnMain() {
-                                    self.photoImageView.image = UIImage(data: imageData)
-                                    self.photoTitleLabel.text = photoTitle
-                                    self.setUIEnabled(true)
-                                }
-                            }
-            
+            // Set image and title if the image exists at the url
+            let imageURL = NSURL(string: imageUrlString)
+            if let imageData = NSData(contentsOfURL: imageURL!) {
+                performUIUpdatesOnMain() {
+                    self.setUIEnabled(true)
+                    self.photoImageView.image = UIImage(data: imageData)
+                    self.photoTitleLabel.text = photoTitle ?? "(Untitled)"
+                }
+            } else {
+                displayError("Image does not exist at \(imageURL)")
+            }
         }
         task.resume()
     }

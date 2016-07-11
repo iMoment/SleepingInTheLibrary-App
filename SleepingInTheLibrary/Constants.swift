@@ -1,21 +1,15 @@
 //
 //  Constants.swift
 //  SleepingInTheLibrary
-//
-//  Created by Jarrod Parkes on 11/5/15.
-//  Copyright © 2015 Udacity. All rights reserved.
-//
-
-// MARK: - Constants
 
 struct Constants {
     
-    // MARK: Flickr
+    // Flickr
     struct Flickr {
         static let APIBaseURL = "https://api.flickr.com/services/rest/"
     }
 
-    // MARK: Flickr Parameter Keys
+    // Flickr Parameter Keys
     struct FlickrParameterKeys {
         static let Method = "method"
         static let APIKey = "api_key"
@@ -25,7 +19,7 @@ struct Constants {
         static let NoJSONCallback = "nojsoncallback"
     }
     
-    // MARK: Flickr Parameter Values
+    // Flickr Parameter Values
     struct FlickrParameterValues {
         static let APIKey = "ca9cf5a0fad937d5ffeab32fc1437968"
         static let ResponseFormat = "json"
@@ -35,7 +29,7 @@ struct Constants {
         static let MediumURL = "url_m"
     }
     
-    // MARK: Flickr Response Keys
+    // Flickr Response Keys
     struct FlickrResponseKeys {
         static let Status = "stat"
         static let Photos = "photos"
@@ -44,7 +38,7 @@ struct Constants {
         static let MediumURL = "url_m"
     }
     
-    // MARK: Flickr Response Values
+    // Flickr Response Values
     struct FlickrResponseValues {
         static let OKStatus = "ok"
     }
