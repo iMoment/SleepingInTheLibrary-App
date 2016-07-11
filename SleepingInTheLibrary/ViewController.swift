@@ -66,15 +66,21 @@ class ViewController: UIViewController {
                 return
             }
             
-                if let data = data {
-                    
-                    let parsedResult: AnyObject!
-                    do {
-                    parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
-                    } catch {
-                        displayError("Could not parse the data as JSON: '\(data)'")
-                        return
-                    }
+            // Check if data was returned
+            guard let data = data else {
+                displayError("No data was returned by the request.")
+                return
+            }
+            
+            // Parse the data
+            let parsedResult: AnyObject!
+            do {
+                parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
+            } catch {
+                displayError("Could not parse the data as JSON: '\(data)'")
+                return
+            }
+
                     // Photos is a Dictionary containing String/AnyObject pairs
                     if let photosDictionary = parsedResult[Constants.FlickrResponseKeys.Photos] as? [String : AnyObject],
                     photoArray = photosDictionary[Constants.FlickrResponseKeys.Photo] as? [[String : AnyObject]] {
@@ -95,7 +101,7 @@ class ViewController: UIViewController {
                             }
                         }
                     }
-                }
+                
             
         }
         task.resume()
