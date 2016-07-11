@@ -39,11 +39,12 @@ class ViewController: UIViewController {
             Constants.FlickrParameterKeys.NoJSONCallback: Constants.FlickrParameterValues.DisableJSONCallback
         ]
         
+        let session = NSURLSession.sharedSession()
         let urlString = Constants.Flickr.APIBaseURL + escapedParameters(methodParameters)
         let url = NSURL(string: urlString)!
         let request = NSURLRequest(URL: url)
         
-        let task = NSURLSession.sharedSession().dataTaskWithRequest(request) { (data, response, error) in
+        let task = session.dataTaskWithRequest(request) { (data, response, error) in
             
             func displayError(error: String) {
                 print(error)
@@ -53,8 +54,18 @@ class ViewController: UIViewController {
                 }
             }
             
-            if error == nil {
-                
+            // Check for error
+            guard (error == nil) else {
+                displayError("There was an error with your request: \(error)")
+                return
+            }
+            
+            // Check for successful 2XX response
+            guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
+                displayError("Your request returned a status code other than 2xx.")
+                return
+            }
+            
                 if let data = data {
                     
                     let parsedResult: AnyObject!
@@ -64,7 +75,7 @@ class ViewController: UIViewController {
                         displayError("Could not parse the data as JSON: '\(data)'")
                         return
                     }
-                    
+                    // Photos is a Dictionary containing String/AnyObject pairs
                     if let photosDictionary = parsedResult[Constants.FlickrResponseKeys.Photos] as? [String : AnyObject],
                     photoArray = photosDictionary[Constants.FlickrResponseKeys.Photo] as? [[String : AnyObject]] {
                         
@@ -85,7 +96,7 @@ class ViewController: UIViewController {
                         }
                     }
                 }
-            }
+            
         }
         task.resume()
     }
