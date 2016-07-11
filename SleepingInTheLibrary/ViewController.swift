@@ -86,15 +86,25 @@ class ViewController: UIViewController {
                 displayError("The Flickr API returned an error.  See error code and message in \(parsedResult)")
                 return
             }
-                    // Photos is a Dictionary containing String/AnyObject pairs
-                    if let photosDictionary = parsedResult[Constants.FlickrResponseKeys.Photos] as? [String : AnyObject],
-                    photoArray = photosDictionary[Constants.FlickrResponseKeys.Photo] as? [[String : AnyObject]] {
-                        
-                        let randomPhotoIndex = Int(arc4random_uniform(UInt32(photoArray.count)))
-                        let photoDictionary = photoArray[randomPhotoIndex] as [String : AnyObject]
-                        
-                        if let imageUrlString = photoDictionary[Constants.FlickrResponseKeys.MediumURL] as? String,
-                            let photoTitle = photoDictionary[Constants.FlickrResponseKeys.Title] as? String {
+            
+            // Check for "photos" and "photo" keys in parsedResult
+            guard let photosDictionary = parsedResult[Constants.FlickrResponseKeys.Photos] as? [String : AnyObject],
+                photoArray = photosDictionary[Constants.FlickrResponseKeys.Photo] as? [[String : AnyObject]] else {
+                    displayError("Cannot find keys '\(Constants.FlickrResponseKeys.Photos)' and '\(Constants.FlickrResponseKeys.Photo)' in \(parsedResult)")
+                    return
+            }
+            
+            // Select a random photo
+            let randomPhotoIndex = Int(arc4random_uniform(UInt32(photoArray.count)))
+            let photoDictionary = photoArray[randomPhotoIndex] as [String : AnyObject]
+            let photoTitle = photoDictionary[Constants.FlickrResponseKeys.Title] as? String
+            
+            // Check our photo for a key for 'url_m'
+            guard let imageUrlString = photoDictionary[Constants.FlickrResponseKeys.MediumURL] as? String else {
+                displayError("Cannot find key '\(Constants.FlickrResponseKeys.MediumURL)' in \(photoDictionary)")
+                return
+            }
+            
                             
                             let imageURL = NSURL(string: imageUrlString)
                             if let imageData = NSData(contentsOfURL: imageURL!) {
@@ -104,9 +114,6 @@ class ViewController: UIViewController {
                                     self.setUIEnabled(true)
                                 }
                             }
-                        }
-                    }
-                
             
         }
         task.resume()
